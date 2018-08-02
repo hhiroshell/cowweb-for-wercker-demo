@@ -9,11 +9,12 @@ spec:
     targetPort: 8080
   selector:
     app: cowweb
+  type: LoadBalancer
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cowweb-v1.0
+  name: cowweb
 spec:
   replicas: 2
   selector:
@@ -25,28 +26,23 @@ spec:
     metadata:
       labels:
         app: cowweb
-        version: v1.0
+        version: v0.1
     spec:
       containers:
       - name: cowweb
-        image: iad.ocir.io/hhiroshell1/cowweb:demo-v1.0
+        image: iad.ocir.io/gse00014510/acme-web-app/cowweb:v0.1
         ports:
         - name: api
           containerPort: 8080
-        env:
-        - name: REDIS_PORT_6379_TCP_ADDR
-          value: "redis"
-        - name: REDIS_PORT_6379_TCP_PORT
-          value: "6379"
         readinessProbe:
           httpGet:
-            path: /cowsay/api/ping
+            path: /cowsay/ping
             port: api
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /cowsay/api/ping
+            path: /cowsay/ping
             port: api
           initialDelaySeconds: 15
           periodSeconds: 20
