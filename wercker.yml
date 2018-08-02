@@ -38,8 +38,8 @@ push-to-releases:
     - internal/docker-push:
         username: $REGISTRY_USERNAME
         password: $REGISTRY_PASSWORD
-        repository: iad.ocir.io/hhiroshell1/cowweb
-        tag: demo-v1.0
+        repository: iad.ocir.io/gse00014510/acme-web-app/cowweb
+        tag: v0.1
         ports: 8080
         cmd: java -jar /pipeline/source/build/libs/cowweb-0.1.jar
 
@@ -85,4 +85,4 @@ deploy-to-cluster:
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_TOKEN
         insecure-skip-tls-verify: true
-        command: get svc -o jsonpath='{.items[*].status.loadBalancer.ingress[*].ip}' --namespace=$COWWEB_NAMESPACE
+        command: get service -o jsonpath='{.items[*].status.loadBalancer.ingress[*].ip}' --namespace=$COWWEB_NAMESPACE
