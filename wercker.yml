@@ -60,11 +60,32 @@ deploy-to-cluster:
         command: get nodes
 
     - kubectl:
-        name: apply deplyoment
+        name: delete objects
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_TOKEN
+        insecure-skip-tls-verify: true
+        command: delete -f $WERCKER_ROOT/kubernetes --namespace=$COWWEB_NAMESPACE
+
+    - script:
+       name: wait to delete resources
+       code: sleep 15
+
+#        name: create namespace
+#        server: $KUBERNETES_MASTER
+#        token: $KUBERNETES_TOKEN
+#        insecure-skip-tls-verify: true
+#        command: create namespace $COWWEB_NAMESPACE
+
+    - kubectl:
+        name: create objects
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_TOKEN
         insecure-skip-tls-verify: true
         command: apply -f $WERCKER_ROOT/kubernetes --namespace=$COWWEB_NAMESPACE
+
+    - script:
+       name: wait to provision resources
+       code: sleep 15
 
     - kubectl:
         name: get LoadBalancer public IP address
